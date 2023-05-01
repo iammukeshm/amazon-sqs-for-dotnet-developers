@@ -19,12 +19,12 @@ public class OrderCreatedEventConsumer : BackgroundService
     {
         _logger.LogInformation("Polling Queue {queueName}", OrderCreatedEventQueueName);
         var queueUrl = await GetQueueUrl(OrderCreatedEventQueueName);
+        var receiveRequest = new ReceiveMessageRequest()
+        {
+            QueueUrl = queueUrl
+        };
         while (!stoppingToken.IsCancellationRequested)
         {
-            var receiveRequest = new ReceiveMessageRequest()
-            {
-                QueueUrl = queueUrl
-            };
             var response = await _sqsClient.ReceiveMessageAsync(receiveRequest);
             if (response.Messages.Count > 0)
             {
